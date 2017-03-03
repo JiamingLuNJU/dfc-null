@@ -15,7 +15,7 @@ function FCsliding = compute_slidingWindow_FC(data,wlen,overlap,winType)
 % FCsliding: matrix of size m x m x p where m is the number of timeseries
 % and p is the number of sliding windows.
 
-if (winType == 'gauss')
+if (strcmp(winType, 'gauss'))
     win = gausswin(wlen)'; % gaussian window
 else
     win = ones(1,wlen); % rectangular window
