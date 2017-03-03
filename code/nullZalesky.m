@@ -1,17 +1,20 @@
 %stub for implementing Zalesky 2014, PNAS model
 
 % Stolen code to make good matrices
-load('subject4session1_PowerPetersen_allSpheres_wraf_sig.mat')
-names=fieldnames(sys);
+% load('subject4session1_PowerPetersen_allSpheres_wraf_sig.mat')
+% names=fieldnames(sys);
+% 
+% %convert to matrix
+% regions = length(names);
+% timepoints = length(sys.(names{1}));
+% 
+% ts_conn = zeros(regions, timepoints);
+% for i = 1:regions
+%     ts_conn(i, :) = sys.(names{i});
+% end
 
-%convert to matrix
-regions = length(names);
-timepoints = length(sys.(names{1}));
 
-ts_conn = zeros(regions, timepoints);
-for i = 1:regions
-    ts_conn(i, :) = sys.(names{i});
-end
+ts_conn = importdata('data/rsfmri-dataset2/sub015.txt');
 
 %% Create VAR model
 
@@ -45,16 +48,33 @@ for y =
 
 
 %%
+ManyModels= [];
+%for i = 1:size(ts_conn,1)-1
+ 
+for i =1:20
+   % for j = i+1:size(ts_conn,1)
+     for j = 1:20
+        if i ~= j
+        current_time_series(i,j) = mat2cell([ts_conn(i,:); ts_conn(j,:)],2);        
+        SuperCoolVARModel = vgxset('n',2,'nAR',11,'Constant',true);
+        disp([i j]);
+        [ManyModels(i,j).EstSpec,ManyModels(i,j).EstStdErrors,ManyModels(i,j).logL,ManyModels(i,j).W] = vgxvarx(SuperCoolVARModel,current_time_series{i,j}');
+    
+        end
+     end
+end
 
-    current_time_series = [ts_conn(1,:), ts_conn(2,:)];
-    SuperCoolVARModel = vgxset('n',2,'nAR',11,'Constant',true);
-    [EstSpec,EstStdErrors,logL,W] = vgxvarx(SuperCoolVARModel,current_time_series);
-    vgxdisp(EstSpec)
 
 
     % building the pair of time-series
 
     %bootstrapping
+    
+    % choose random blocks of time-series data of random pairs
+    % apply the correct auto-regressive model
+    % generate some number of random datasets
+    
+    
     %choose time point at random n, 1<n<(N-p)
         rng(1,'twister');
         r = randi([1 length(ts_conn)-2],1,1000);
