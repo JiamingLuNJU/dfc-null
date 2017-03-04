@@ -17,12 +17,21 @@ ts_conn = importdata('data/rsfmri-dataset2/sub015.txt');
 wlen = 50;
 FCsliding = compute_slidingWindow_FC(ts_conn',wlen,wlen-1, '');
 
-le = 630;
+%cut it down for testing
+FCsliding = FCsliding(1:90, 1:90, :);
+
+dim = size(FCsliding);
+le = dim(1);
 count = 1;
-for r1 = 1:le
+
+ts_vec = zeros(sum(1:le-1), dim(3));
+
+for r1 = 1:le-1
    for r2 = r1+1:le
         ts_vec(count, :) = FCsliding(r1, r2, :);
         count = count + 1;
    end
 end
+
+test = testStatVar(ts_vec);
 
