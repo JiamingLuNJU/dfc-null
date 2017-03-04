@@ -3,7 +3,7 @@ ts_conn = importdata('data/rsfmri-dataset2/sub015.txt');
 [ts1 ts2] = nullHindricks(ts_conn, 1);
 
 nullHind = [ts1 ts2];
-save('data/results/nullHind.mat', 'nullHind')
+% save('data/results/nullHind.mat', 'nullHind')
 
 surrog = zeros(630);
 
