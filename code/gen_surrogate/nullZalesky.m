@@ -30,38 +30,57 @@ ts_conn = importdata('data/rsfmri-dataset2/sub015.txt');
 
 %create random pair of ROIs
 
-for y = 
-    num_orders = 50;
-    % how do we choose "T" (sample size?)
-    EstMdl(
-    for i = 1:num_orders
-        EstMdl(i,:) = arima('ARLags',1:i);
-    end 
-
-    %Fit models to the data
-    logL = zeros(num_orders,1);
-    for i = 1:num_orders
-        [~,~,logL(i)]= estimate(EstMdl(i,:),y,'print',false);
-    end
-
-    [aic, bic] = aicbic(logL,[3;4;5], T*ones(num_orders,1);
+% %%% No idea what this code is - MKE 3/7
+% for y = 
+%     num_orders = 50;
+%     % how do we choose "T" (sample size?)
+%     EstMdl(
+%     for i = 1:num_orders
+%         EstMdl(i,:) = arima('ARLags',1:i);
+%     end 
+% 
+%     %Fit models to the data
+%     logL = zeros(num_orders,1);
+%     for i = 1:num_orders
+%         [~,~,logL(i)]= estimate(EstMdl(i,:),y,'print',false);
+%     end
+% 
+%     [aic, bic] = aicbic(logL,[3;4;5], T*ones(num_orders,1);
 
 
 %%
+%%% New ManyModels code
 ManyModels= [];
-%for i = 1:size(ts_conn,1)-1
+for i = 1:size(ts_conn,1)-1
  
-for i =1:20
-   % for j = i+1:size(ts_conn,1)
-     for j = 1:20
+%for i =1:20
+    for j = i+1:size(ts_conn,1)
+    % for j = 1:20
         if i ~= j
-            current_time_series(i,j) = mat2cell([ts_conn(i,:); ts_conn(j,:)],2);
-            SuperCoolVARModel = vgxset('n',2,'nAR',11,'Constant',true);
-            disp([i j]);
-            [ManyModels(i,j).EstSpec,ManyModels(i,j).EstStdErrors,ManyModels(i,j).logL,ManyModels(i,j).W] = vgxvarx(SuperCoolVARModel,current_time_series{i,j}');          
+        current_time_series(i,j) = mat2cell([ts_conn(i,:); ts_conn(j,:)],2);        
+        SuperCoolVARModel = vgxset('n',2,'nAR',11,'Constant',true);
+        disp([i j]);
+        [ManyModels(i,j).EstSpec,ManyModels(i,j).EstStdErrors,ManyModels(i,j).logL,ManyModels(i,j).W] = vgxvarx(SuperCoolVARModel,current_time_series{i,j}');
+    
         end
      end
 end
+
+% %%% old ManyModels code
+% ManyModels= [];
+% %for i = 1:size(ts_conn,1)-1
+%  
+% for i =1:20
+%    % for j = i+1:size(ts_conn,1)
+%      for j = 1:20
+%         if i ~= j
+%             current_time_series(i,j) = mat2cell([ts_conn(i,:); ts_conn(j,:)],2);
+%             SuperCoolVARModel = vgxset('n',2,'nAR',11,'Constant',true);
+%             disp([i j]);
+%             [ManyModels(i,j).EstSpec,ManyModels(i,j).EstStdErrors,ManyModels(i,j).logL,ManyModels(i,j).W] = vgxvarx(SuperCoolVARModel,current_time_series{i,j}');          
+%         end
+%      end
+% end
 
 
 
